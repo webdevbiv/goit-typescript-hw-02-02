@@ -17,14 +17,20 @@ const ImageModal: React.FC<Props> = ({ image, isOpen, onClose }) => {
       style={{
         overlay: {
           backgroundColor: "rgba(0, 0, 0, 0.75)",
-          overflow: "hidden",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
         },
         content: {
-          color: "lightsteelblue",
-          overflow: "hidden",
-          padding: "0",
-          borderRadius: "0",
+          position: "relative",
+          inset: "unset",
+          padding: 0,
           border: "none",
+          background: "transparent",
+          overflow: "hidden",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
         },
       }}
     >
