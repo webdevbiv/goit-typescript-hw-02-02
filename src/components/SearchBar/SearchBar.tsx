@@ -1,15 +1,21 @@
 import toast from "react-hot-toast";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 import s from "./SearchBar.module.scss";
 
-const SearchBar = ({ onSubmit }) => {
-  const handleSubmit = (e) => {
+interface Props {
+  onSubmit: (query: string) => void;
+}
+
+const SearchBar: React.FC<Props> = ({ onSubmit }) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const form = e.target;
-    const query = form.elements[0].value.trim();
+    const form = e.currentTarget;
+    const input = form.elements[0] as HTMLInputElement;
+    const query = input.value.trim();
+
     if (query === "") {
       toast.error("Please enter a search term");
       return;
@@ -18,6 +24,7 @@ const SearchBar = ({ onSubmit }) => {
     onSubmit(query);
     form.reset();
   };
+
   return (
     <header className={s.header}>
       <form className={s.form} onSubmit={handleSubmit}>
@@ -29,7 +36,7 @@ const SearchBar = ({ onSubmit }) => {
           placeholder="Search images and photos"
         />
         <button className={s.button} type="submit">
-        <FontAwesomeIcon icon={faSearch} />
+          <FontAwesomeIcon icon={faSearch} />
         </button>
       </form>
     </header>

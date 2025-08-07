@@ -1,8 +1,14 @@
 import ReactModal from "react-modal";
-
 import s from "./ImageModal.module.scss";
+import type { UnsplashImage } from "../../types";
 
-const ImageModal = ({ image, isOpen, onClose }) => {
+interface Props {
+  image: UnsplashImage | null;
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const ImageModal: React.FC<Props> = ({ image, isOpen, onClose }) => {
   return (
     <ReactModal
       isOpen={isOpen}
@@ -26,7 +32,7 @@ const ImageModal = ({ image, isOpen, onClose }) => {
         <img
           className={s.image}
           src={image.urls.regular}
-          alt={image.alt_description}
+          alt={image.alt_description || "Image"}
         />
       )}
     </ReactModal>

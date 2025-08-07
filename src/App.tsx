@@ -6,18 +6,19 @@ import Loader from "./components/Loader/Loader";
 import LoadMoreBtn from "./components/LoadMoreBtn/LoadMoreBtn";
 import SearchBar from "./components/SearchBar/SearchBar";
 import { fetchImages } from "./api/api";
+import type { UnsplashImage } from "./types";
 
 import "./App.scss";
 
 function App() {
-  const [query, setQuery] = useState("");
-  const [images, setImages] = useState([]);
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
-  const [modalImage, setModalImage] = useState(null);
-  const [showModal, setShowModal] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [query, setQuery] = useState<string>("");
+  const [images, setImages] = useState<UnsplashImage[]>([]);
+  const [page, setPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(0);
+  const [modalImage, setModalImage] = useState<UnsplashImage | null>(null);
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -29,7 +30,6 @@ function App() {
       setIsLoading(true);
       try {
         const data = await fetchImages(query, page, abortController.signal);
-        console.log(data);
 
         if (data.total === 0) {
           setError("No images found");
@@ -38,15 +38,15 @@ function App() {
           setPage(1);
           return;
         }
+
         if (page === 1) {
           setImages(data.results);
           setTotalPages(data.total_pages);
         } else {
-          setImages((prevImages) => [...prevImages, ...data.results]);
+          setImages((prev) => [...prev, ...data.results]);
         }
-      } catch (error) {
-        if (error.name === "CanceledError") return;
-
+      } catch (error: unknown) {
+        if ((error as Error).name === "CanceledError") return;
         setError("Something went wrong. Please try again.");
       } finally {
         setIsLoading(false);
@@ -54,17 +54,18 @@ function App() {
     };
 
     getImages();
+
     return () => {
       abortController.abort();
     };
   }, [query, page]);
 
-  const onSubmit = (query) => {
-    setQuery(query);
+  const onSubmit = (newQuery: string) => {
+    setQuery(newQuery);
     setPage(1);
   };
 
-  const handleModalOpen = (image) => {
+  const handleModalOpen = (image: UnsplashImage) => {
     setModalImage(image);
     setShowModal(true);
   };
@@ -90,7 +91,6 @@ function App() {
         onClose={handleModalClose}
         image={modalImage}
       />
-
       <Loader loading={isLoading} />
       {page < totalPages && <LoadMoreBtn onClick={handleLoadMore} />}
     </>
